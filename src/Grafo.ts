@@ -602,10 +602,16 @@ export abstract class Grafo {
     let fluxoMaximo = 0;
 
     while (true) {
-      const caminho = this.encontrarCaminhoAumentante(grafoResidual, origem, destino);
+      const caminho = this.encontrarCaminhoAumentante(
+        grafoResidual,
+        origem,
+        destino
+      );
       if (!caminho) break;
 
-      const capacidadeMinima = Math.min(...caminho.map(([u, v]) => grafoResidual[u][v]));
+      const capacidadeMinima = Math.min(
+        ...caminho.map(([u, v]) => grafoResidual[u][v])
+      );
 
       for (const [u, v] of caminho) {
         grafoResidual[u][v] -= capacidadeMinima;
@@ -670,14 +676,16 @@ export abstract class Grafo {
     for (let u = 0; u < this.vertices.length; u++) {
       for (let v = 0; v < this.vertices.length; v++) {
         if (this.existeAresta(u, v)) {
+          const pesoOriginal = this.pesoAresta(u, v);
           this.removerAresta(u, v);
-          this.inserirAresta(v, u, this.pesoAresta(v, u));
+          this.inserirAresta(v, u, pesoOriginal);
+
           const novoFluxoMaximo = this.fordFulkerson(origem, destino);
           if (novoFluxoMaximo > fluxoMaximo) {
             fluxoMaximo = novoFluxoMaximo;
           } else {
             this.removerAresta(v, u);
-            this.inserirAresta(u, v, this.pesoAresta(u, v));
+            this.inserirAresta(u, v, pesoOriginal);
           }
         }
       }
