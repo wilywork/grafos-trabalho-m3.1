@@ -1,7 +1,8 @@
 import GrafoLista from "./GrafoLista";
 import GrafoMatriz from "./GrafoMatriz";
 
-function main() {
+function main(args: string[]): void {
+  const caminhoArquivo = args[0];
   // const caminhoArquivo = "./src/arquivos/C4000-260-X.txt";
   // const caminhoArquivo = "./src/arquivos/k5.txt";
   // const caminhoArquivo = "./src/arquivos/k33.txt";
@@ -14,7 +15,7 @@ function main() {
 
   // const caminhoArquivo = "./src/arquivos2/50vertices25%Arestas.txt";
   // const caminhoArquivo = "./src/arquivos2/50vertices50%Arestas.txt";
-  const caminhoArquivo = "./src/arquivos2/50vertices100%Arestas.txt";
+  // const caminhoArquivo = "./src/arquivos/slide8.txt";
   // const caminhoArquivo = "./src/arquivos2/500vertices25%Arestas.txt";
   // const caminhoArquivo = "./src/arquivos2/500vertices50%Arestas.txt";
   // const caminhoArquivo = "./src/arquivos2/500vertices100%Arestas.txt";
@@ -43,8 +44,15 @@ function main() {
   const fluxoMaximo = grafo.fordFulkerson(0, grafo.getNumeroVertices() - 1);
   console.log(`Fluxo Máximo: ${fluxoMaximo}`);
 
-  const fluxoMaximoOtimizado = grafo.buscaLocal(0, grafo.getNumeroVertices() - 1);
+  const fluxoMaximoOtimizado = grafo.buscaLocal(
+    0,
+    grafo.getNumeroVertices() - 1
+  );
   console.log(`Fluxo Máximo Otimizado: ${fluxoMaximoOtimizado}`);
 }
 
-main();
+main(["./src/arquivos/slide0.txt"]);
+main(["./src/arquivos/slide1.txt"]);
+main(["./src/arquivos/slide4.txt"]);
+main(["./src/arquivos/slide8.txt"]);
+main(["./src/arquivos/slide9.txt"]);

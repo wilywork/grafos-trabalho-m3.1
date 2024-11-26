@@ -602,26 +602,18 @@ export abstract class Grafo {
     let fluxoMaximo = 0;
 
     while (true) {
-      const caminhoAumentante = this.encontrarCaminhoAumentante(
-        grafoResidual,
-        origem,
-        destino
-      );
-      if (!caminhoAumentante) break;
+      const caminho = this.encontrarCaminhoAumentante(grafoResidual, origem, destino);
+      if (!caminho) break;
 
-      const fluxoCaminho = Math.min(
-        ...caminhoAumentante.map(([u, v]) => grafoResidual[u][v])
-      );
+      const capacidadeMinima = Math.min(...caminho.map(([u, v]) => grafoResidual[u][v]));
 
-      for (const [u, v] of caminhoAumentante) {
-        grafoResidual[u][v] -= fluxoCaminho;
-        if (grafoResidual[v][u] === undefined) {
-          grafoResidual[v][u] = 0;
-        }
-        grafoResidual[v][u] += fluxoCaminho;
+      for (const [u, v] of caminho) {
+        grafoResidual[u][v] -= capacidadeMinima;
+        if (!grafoResidual[v][u]) grafoResidual[v][u] = 0;
+        grafoResidual[v][u] += capacidadeMinima;
       }
 
-      fluxoMaximo += fluxoCaminho;
+      fluxoMaximo += capacidadeMinima;
     }
 
     return fluxoMaximo;
@@ -644,20 +636,27 @@ export abstract class Grafo {
     destino: number
   ): [number, number][] | null {
     const visitados = new Set<number>();
-    const caminho: [number, number][] = [];
-    const stack: number[] = [origem];
+    const antecessores = Array(this.vertices.length).fill(-1);
+    const fila: number[] = [origem];
 
-    while (stack.length > 0) {
-      const u = stack.pop()!;
-      if (u === destino) return caminho;
-
-      visitados.add(u);
+    while (fila.length > 0) {
+      const u = fila.shift()!;
 
       for (let v = 0; v < grafoResidual[u].length; v++) {
         if (!visitados.has(v) && grafoResidual[u][v] > 0) {
-          stack.push(v);
-          caminho.push([u, v]);
-          if (v === destino) return caminho;
+          visitados.add(v);
+          antecessores[v] = u;
+          fila.push(v);
+          if (v === destino) {
+            const caminho: [number, number][] = [];
+            let atual = destino;
+            while (atual !== origem) {
+              const anterior = antecessores[atual];
+              caminho.unshift([anterior, atual]);
+              atual = anterior;
+            }
+            return caminho;
+          }
         }
       }
     }
